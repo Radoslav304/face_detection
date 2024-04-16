@@ -1,4 +1,3 @@
-import numpy as np
 import cv2
 
 # Inicializacia
@@ -23,17 +22,20 @@ while (cap.isOpened()):
         cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 1)
         roi_gray = gray[y:y + h, x:x + w]
         roi_color = frame[y:y + h, x:x + w]
+
         eyes = eye_cascade.detectMultiScale(roi_gray)
 
         for (ex, ey, ew, eh) in eyes:
             cv2.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh), (0, 255, 0), 1)
-        
+
+        num_eyes = len(eyes)
+        cv2.putText(frame, "Pocet oci: " + str(num_eyes), (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+
         smiles = smile_cascade.detectMultiScale(roi_gray, scaleFactor=1.7, minNeighbors=22, minSize=(25, 25)) 
 
         for (sx, sy, sw, sh) in smiles:
             cv2.rectangle(roi_color, (sx, sy), (sx+sw, sy+sh), (0, 0, 255), 1)
 
-        # Uložiť detegovanú tvár ako obrázok
         cv2.imwrite("detected_face_" + str(i) + ".jpg", frame[y:y+h, x:x+w])
 
     cv2.putText(frame, "Pocet tvari: " + str(len(faces)), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)  
